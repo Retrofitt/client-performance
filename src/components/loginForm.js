@@ -1,19 +1,7 @@
 import { Button, Form, Input } from "antd";
-import axios from "axios";
 
-const LoginForm = () => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-    axios
-      .post("https://adminapi.doctorgenius.com/prod/AdminUsers/Login", values)
-      .then((res) => {
-        localStorage.setItem("token", res.data);
-      });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+const LoginForm = (props) => {
+  const { onFinish, onFinishFailed, checkToken, setIsLoggedIn } = props;
 
   return (
     <div>
