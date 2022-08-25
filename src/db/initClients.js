@@ -1,4 +1,4 @@
-const initClients = [
+export const initClients = [
   {
     id: "12613",
     name: "Visalia Care Dental ",
@@ -32,7 +32,7 @@ const initClients = [
   {
     id: "14002",
     name: "Gentle Touch Dental Care",
-    username: "",
+    username: "daniel.babadjanov@gmail.com",
   },
   {
     id: "13992",

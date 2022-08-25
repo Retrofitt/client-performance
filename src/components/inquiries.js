@@ -3,43 +3,58 @@ import React, { useEffect, useState } from "react";
 import { axiosWithAuth } from "../utilities/axiosWithAuth";
 import { Space, Table, Tag } from "antd";
 // import axios from "axios";
-// import initClients from "../db/initClients";
+import { initClients } from "../db/initClients";
 
-const initClients = [
-  {
-    id: "12613",
-    name: "Visalia Care Dental",
-    username: "visaliacaredental@gmail.com",
-  },
-  {
-    id: "13147",
-    name: "Grand Parkway Dental Care",
-    username: "drk@gppdental.com",
-  },
-];
+// const initClients = [
+//   {
+//     id: "12613",
+//     name: "Visalia Care Dental",
+//     username: "visaliacaredental@gmail.com",
+//   },
+//   {
+//     id: "13147",
+//     name: "Grand Parkway Dental Care",
+//     username: "drk@gppdental.com",
+//   },
+// ];
 
 function ClientInformation() {
   const [clients, setClients] = useState(initClients);
-  const [mostRecent, setMostRecent] = useState("0");
-  clients.map((client) => {
+
+  const getClientData = async (key, client) => {
+    try {
+      const res = await axiosWithAuth(key).get(
+        "https://portalapi.doctorgenius.com/prod/LeadInquiryReports"
+      );
+
+      client.value = res.data.$values;
+
+      console.log(clients);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getImpersonate = async (client) => {
+    console.log(client);
+    const adminToken = localStorage.getItem("token");
     const { username } = client;
     const req = { Username: username };
-    const adminToken = localStorage.getItem("token");
-    return axiosWithAuth(adminToken)
-      .post(
+    try {
+      const res = await axiosWithAuth(adminToken).post(
         "https://adminapi.doctorgenius.com/prod/AdminUsers/Impersonate",
         req
-      )
-      .then((res) => {
-        client.token = res.data;
-        axiosWithAuth(client.token)
-          .get("https://portalapi.doctorgenius.com/prod/LeadInquiryReports")
-          .then((res) => {
-            client.value = res.data.$values;
-            // console.log(clients);
-          });
-      });
+      );
+      getClientData(res, client);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  clients.map((client) => {
+    return getImpersonate(client);
   });
+
   const columns = [
     {
       title: "Name",
