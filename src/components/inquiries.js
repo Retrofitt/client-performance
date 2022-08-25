@@ -2,20 +2,20 @@ import "antd/dist/antd.css";
 import React, { useEffect, useState } from "react";
 import { axiosWithAuth } from "../utilities/axiosWithAuth";
 import axios from "axios";
-// import initClients from "../db/initClients";
+import { initClients } from "../db/initClients";
 
-const initClients = [
-  {
-    id: "12613",
-    name: "Visalia Care Dental",
-    username: "visaliacaredental@gmail.com",
-  },
-  {
-    id: "13147",
-    name: "Grand Parkway Dental Care",
-    username: "drk@gppdental.com",
-  },
-];
+// const initClients = [
+//   {
+//     id: "12613",
+//     name: "Visalia Care Dental",
+//     username: "visaliacaredental@gmail.com",
+//   },
+//   {
+//     id: "13147",
+//     name: "Grand Parkway Dental Care",
+//     username: "drk@gppdental.com",
+//   },
+// ];
 
 function ClientInformation() {
   const [clients, setClients] = useState(initClients);
