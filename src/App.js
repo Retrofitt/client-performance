@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import LoginForm from "./components/loginForm";
 import axios from "axios";
 import { Button, Form, Input } from "antd";
+import ClientInformation from "./components/inquiries";
 
 const { Header, Sider, Content } = Layout;
 
@@ -105,6 +106,7 @@ function App() {
             {isLoggedIn ? (
               <div>
                 {" "}
+                <ClientInformation />
                 <Button type="primary" onClick={Logout}>
                   logout
                 </Button>{" "}
