@@ -19,6 +19,7 @@ import { initClients } from "../db/initClients";
 
 function ClientInformation() {
   const [clients, setClients] = useState(initClients);
+
   const adminToken = localStorage.getItem("token");
 
   const columns = [
@@ -52,14 +53,14 @@ function ClientInformation() {
     },
   ];
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
+  // const onChange = (pagination, filters, sorter, extra) => {
+  //   console.log("params", pagination, filters, sorter, extra);
+  // };
 
-  clients.map(async (client) => {
+  clients.forEach(async (client) => {
     const { username } = client;
     const req = { Username: username };
-    return await axiosWithAuth(adminToken)
+    await axiosWithAuth(adminToken)
       .post(
         "https://adminapi.doctorgenius.com/prod/AdminUsers/Impersonate",
         req
@@ -73,10 +74,10 @@ function ClientInformation() {
           });
       });
   });
-  console.log(initClients);
+  console.log(clients);
   return (
     <div>
-      <Table columns={columns} dataSource={clients} onChange={onChange} />
+      <Table columns={columns} dataSource={clients} />
     </div>
   );
 }
