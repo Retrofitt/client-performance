@@ -5,21 +5,11 @@ import { Space, Table, Tag } from "antd";
 // import axios from "axios";
 import { initClients } from "../db/initClients";
 
-// const initClients = [
-//   {
-//     id: "12613",
-//     name: "Visalia Care Dental",
-//     username: "visaliacaredental@gmail.com",
-//   },
-//   {
-//     id: "13147",
-//     name: "Grand Parkway Dental Care",
-//     username: "drk@gppdental.com",
-//   },
-// ];
-
 function ClientInformation() {
-  const [clients, setClients] = useState(initClients);
+  const [clients, setClients] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const newList = [];
+  const adminToken = localStorage.getItem("token");
 
   const getClientData = async (key, client) => {
     try {
@@ -28,32 +18,37 @@ function ClientInformation() {
       );
 
       client.value = res.data.$values;
-
-      console.log(clients);
+      newList.push(client);
+      console.log(newList);
     } catch (err) {
       console.log(err);
     }
   };
 
   const getImpersonate = async (client) => {
-    console.log(client);
-    const adminToken = localStorage.getItem("token");
-    const { username } = client;
-    const req = { Username: username };
+    const req = { Username: client.username };
     try {
       const res = await axiosWithAuth(adminToken).post(
         "https://adminapi.doctorgenius.com/prod/AdminUsers/Impersonate",
         req
       );
-      getClientData(res, client);
+      getClientData(res.data, client);
     } catch (err) {
       console.log(err);
     }
   };
 
-  clients.map((client) => {
-    return getImpersonate(client);
-  });
+  const checkNewList = () => {
+    if (newList.length === initClients.length) {
+      setClients(newList);
+      setIsUpdated(true);
+    }
+  };
+
+  for (let i = 0; i < initClients.length; i++) {
+    getImpersonate(initClients[i]);
+    checkNewList();
+  }
 
   const columns = [
     {
