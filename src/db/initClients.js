@@ -1,4 +1,4 @@
-const initClients = [
+export const initClients = [
   {
     id: "12613",
     name: "Visalia Care Dental ",
