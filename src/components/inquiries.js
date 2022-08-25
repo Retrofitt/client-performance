@@ -2,41 +2,9 @@ import "antd/dist/antd.css";
 import React, { useEffect, useState } from "react";
 import { axiosWithAuth } from "../utilities/axiosWithAuth";
 import axios from "axios";
+import initClients from "../db/initClients";
 
 // NOT FUNCTIONAL
-
-const initClients = {
-  client1: {
-    id: "",
-    name: "",
-    username: "example@example.com",
-    token: "qwiew899iqu2pioejopsdhfiu2q3r",
-    values: {
-      newcalls: "asdfasd",
-      newclients: "asdfasdfasdf",
-    },
-  },
-  client2: {
-    id: "",
-    name: "",
-    username: "",
-  },
-  client3: {
-    id: "",
-    name: "",
-    username: "",
-  },
-  client4: {
-    id: "",
-    name: "",
-    username: "",
-  },
-  client5: {
-    id: "",
-    name: "",
-    username: "",
-  },
-};
 
 function Clients() {
   const [clients, setClients] = useState(initClients);

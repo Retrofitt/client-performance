@@ -27,10 +27,11 @@ function App() {
     }
   };
 
-function Logout() {
-  window.localStorage.removeItem("token");
-  window.location.reload(false);
-}
+  function Logout() {
+    window.localStorage.removeItem("token");
+    window.location.reload(false);
+    // checkToken();
+  }
 
   useEffect(() => {
     checkToken();
@@ -102,9 +103,12 @@ function Logout() {
             {/* enter content here */}
 
             {isLoggedIn ? (
-              <div>  <Button type="primary" onClick={Logout}>
-              logout
-            </Button> </div>
+              <div>
+                {" "}
+                <Button type="primary" onClick={Logout}>
+                  logout
+                </Button>{" "}
+              </div>
             ) : (
               <LoginForm
                 onFinish={onFinish}
