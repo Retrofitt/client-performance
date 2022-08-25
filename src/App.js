@@ -10,6 +10,7 @@ import { Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import LoginForm from "./components/loginForm";
 import axios from "axios";
+import { Button, Form, Input } from "antd";
 
 const { Header, Sider, Content } = Layout;
 
@@ -25,6 +26,12 @@ function App() {
       setIsLoggedIn(false);
     }
   };
+
+function Logout() {
+  window.localStorage.removeItem("token");
+  window.location.reload(false);
+}
+
   useEffect(() => {
     checkToken();
   });
@@ -95,7 +102,9 @@ function App() {
             {/* enter content here */}
 
             {isLoggedIn ? (
-              <div> "you are logged in" </div>
+              <div>  <Button type="primary" onClick={Logout}>
+              logout
+            </Button> </div>
             ) : (
               <LoginForm
                 onFinish={onFinish}
