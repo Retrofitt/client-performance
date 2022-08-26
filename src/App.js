@@ -61,8 +61,8 @@ function App() {
     checkToken();
   }
 
-  const onFinish = (values) => {
-    axios
+  const onFinish = async (values) => {
+    await axios
       .post("https://adminapi.doctorgenius.com/prod/AdminUsers/Login", values)
       .then((res) => {
         localStorage.setItem("token", res.data);
