@@ -1,28 +1,56 @@
 import "antd/dist/antd.css";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LoginForm from "./components/loginForm";
 import axios from "axios";
-import { Button, Form, Input } from "antd";
-import ClientInformation from "./components/inquiries";
+import { Button } from "antd";
+import ClientTable from "./components/ClientTable";
+import { initClients } from "./db/initClients";
+import { axiosWithAuth } from "./utilities/axiosWithAuth";
 
 const { Header, Sider, Content } = Layout;
 
 function App() {
   const [collapsed, setCollapsed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [clients, setClients] = useState([]);
 
+  const getClientData = async (key, client) => {
+    try {
+      const res = await axiosWithAuth(key).get(
+        "https://portalapi.doctorgenius.com/prod/LeadInquiryReports?$orderby=dateCreated desc"
+      );
+
+      client.value = res.data.$values;
+
+      if (!clients.includes(client)) {
+        setClients((current) => [...current, client]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getImpersonate = async (client) => {
+    const req = { Username: client.username };
+    try {
+      const res = await axiosWithAuth(localStorage.getItem("token")).post(
+        "https://adminapi.doctorgenius.com/prod/AdminUsers/Impersonate",
+        req
+      );
+      getClientData(res.data, client);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const checkToken = () => {
     const token = localStorage.getItem("token");
     if (token || null) {
       setIsLoggedIn(true);
+      for (let i = 0; i < initClients.length; i++) {
+        getImpersonate(initClients[i]);
+      }
     } else {
       setIsLoggedIn(false);
     }
@@ -30,15 +58,10 @@ function App() {
 
   function Logout() {
     window.localStorage.removeItem("token");
-    window.location.reload(false);
-    // checkToken();
+    checkToken();
   }
 
-  useEffect(() => {
-    checkToken();
-  });
   const onFinish = (values) => {
-    // console.log("Success:", values);
     axios
       .post("https://adminapi.doctorgenius.com/prod/AdminUsers/Login", values)
       .then((res) => {
@@ -50,6 +73,7 @@ function App() {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   return (
     <div>
       <Layout style={{ height: "100vh" }}>
@@ -59,23 +83,23 @@ function App() {
             theme="dark"
             mode="inline"
             defaultSelectedKeys={["1"]}
-            items={[
-              {
-                key: "1",
-                icon: <UserOutlined />,
-                label: "nav 1",
-              },
-              {
-                key: "2",
-                icon: <VideoCameraOutlined />,
-                label: "nav 2",
-              },
-              {
-                key: "3",
-                icon: <UploadOutlined />,
-                label: "nav 3",
-              },
-            ]}
+            // items={[
+            //   {
+            //     key: "1",
+            //     icon: <UserOutlined />,
+            //     label: "nav 1",
+            //   },
+            //   {
+            //     key: "2",
+            //     icon: <VideoCameraOutlined />,
+            //     label: "nav 2",
+            //   },
+            //   {
+            //     key: "3",
+            //     icon: <UploadOutlined />,
+            //     label: "nav 3",
+            //   },
+            // ]}
           />
         </Sider>
         <Layout className="site-layout">
@@ -106,7 +130,7 @@ function App() {
             {isLoggedIn ? (
               <div>
                 {" "}
-                <ClientInformation />
+                <ClientTable clients={clients} />
                 <Button type="primary" onClick={Logout}>
                   logout
                 </Button>{" "}
